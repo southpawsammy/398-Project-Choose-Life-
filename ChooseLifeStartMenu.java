@@ -1,5 +1,9 @@
 //imports all necessary javafx extensions
+import javafx.beans.value.ChangeListener ;
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.Scene;
@@ -26,13 +30,11 @@ import javafx.scene.control.ProgressBar;
  * Stores all variables and methods needed to run the Choose Life game
  */
 public class ChooseLifeStartMenu extends Application{
+	static Questions questions = new Questions();
 	//Global Variables
 	public static int[] position = {0,0};
 	public static int progress = 0;
-	public static boolean gameover = false;
-	public static int[] prevposition;
-	public static int critNum;
-	
+	public static int[] prevposition = {0,0};
 	//BorderPane that holds start menu items
 	private BorderPane startMenu = new BorderPane();
 	
@@ -44,8 +46,9 @@ public class ChooseLifeStartMenu extends Application{
 	
 	//GridPane that holds the in-game buttons
 	private static GridPane buttonGrid = new GridPane();
-
-	static Questions questions = new Questions();
+	
+	//BorderPane that holds the game over window
+	private static BorderPane GameOverWindow = new BorderPane();
 	
 	static Label leftGameText;
 	static Label rightGameText;
@@ -62,6 +65,8 @@ public class ChooseLifeStartMenu extends Application{
 		startMenu.setTop(h);
 		
 		Stage secondaryStage = new Stage();
+		Stage lostStage = new Stage();
+		
 		//Code for instructions text
 		HBox h2 = new HBox();
 		Label centerStartLabel = new Label("Every decision you make will trigger a new decision to be made.\n"
@@ -80,13 +85,6 @@ public class ChooseLifeStartMenu extends Application{
 	    startButton.setFont(startButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 15.0));
 	    startButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
 	    startButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
-	    startButton.setOnAction(new EventHandler<ActionEvent>() {
-
-	        @Override
-	        public void handle(ActionEvent event) {
-	        	secondaryStage.show();
-	        }
-	      });
 	    
 		Button startMenuExitButton = new Button("EXIT"); //creates new button
 		startMenuExitButton.setMinHeight(50);
@@ -94,28 +92,25 @@ public class ChooseLifeStartMenu extends Application{
 		startMenuExitButton.setFont(startMenuExitButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 15.0));
 		startMenuExitButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
 		startMenuExitButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
-		startMenuExitButton.setOnAction(new EventHandler<ActionEvent>() {
 
-	        @Override
-	        public void handle(ActionEvent event) {
-	          primaryStage.close();
-	        }
-	      });
 		startButtonGrid.add(startButton, 0, 0);
 		startButtonGrid.add(startMenuExitButton, 1, 0);
 		startButtonGrid.setAlignment(Pos.CENTER);
 		startMenu.setBottom(startButtonGrid);
-		
-		//finalizes start menu
 		startMenu.setAlignment(h, Pos.CENTER);
 		startMenu.setAlignment(startButtonGrid, Pos.CENTER);
+		
 		Scene scene = new Scene(startMenu);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setTitle("CHOOSE LIFE");
 		primaryStage.sizeToScene();
 		
-		String[][] life = questions.init_Questions();
+		
+		//Creating Game window
+		
+		String[][] kidlife = questions.init_Questions();
+		
 		//create and display button grid
 		
 		//Rewind button
@@ -125,12 +120,6 @@ public class ChooseLifeStartMenu extends Application{
 		rewindButton.setFont(rewindButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 15.0));
 		rewindButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
 		rewindButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
-		rewindButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	secondaryStage.hide();
-		    }
-	      });
 		
 		//Exit Button
 		Button exitButton = new Button("EXIT"); //creates new button
@@ -139,13 +128,7 @@ public class ChooseLifeStartMenu extends Application{
 		exitButton.setFont(exitButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 15.0));
 		exitButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
 		exitButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
-		exitButton.setOnAction(new EventHandler<ActionEvent>() {
-
-	        @Override
-	        public void handle(ActionEvent event) {
-	        	secondaryStage.hide();
-	        }
-	      });
+		
 	    
 		buttonGrid.add(rewindButton,0,0);
 		buttonGrid.add(exitButton, 1, 0);
@@ -170,8 +153,8 @@ public class ChooseLifeStartMenu extends Application{
 		leftTextBox.getChildren().addAll(leftGameText);
 		leftPane.add(leftTextBox, 0, 0);
 		leftPane.add(leftButton, 0, 1);
+		leftPane.setAlignment(Pos.BOTTOM_CENTER);
 		gameWindow.setLeft(leftPane);
-		gameWindow.setAlignment(leftPane, Pos.CENTER);
 		
 		//create and display right side of game display
 		GridPane rightPane = new GridPane();
@@ -188,8 +171,8 @@ public class ChooseLifeStartMenu extends Application{
 		rightTextBox.getChildren().addAll(rightGameText);
 		rightPane.add(rightTextBox, 0, 0);
 		rightPane.add(rightButton, 0, 1);
+		rightPane.setAlignment(Pos.BOTTOM_CENTER);
 		gameWindow.setRight(rightPane);
-		gameWindow.setAlignment(rightPane, Pos.CENTER);
 		
 		//create and display progress bar
 		ProgressBar pb = new ProgressBar(0);
@@ -198,33 +181,105 @@ public class ChooseLifeStartMenu extends Application{
 		
 		//create and display middle of game display
 		HBox centerTextBox = new HBox();
-		Label centerGameText = new Label(questions.printQuestion(life, position[0], position[1]));
+		Label centerGameText = new Label(questions.printQuestion(kidlife, position[0], position[1]));
 		centerTextBox.getChildren().addAll(centerGameText);
 		centerTextBox.setAlignment(Pos.CENTER);
 		gameWindow.setCenter(centerTextBox);
 		
+		//finalize in-game window
+		Scene scene2 = new Scene(gameWindow);
+		secondaryStage.setScene(scene2);
+		secondaryStage.setTitle("CHOOSE LIFE");
+		secondaryStage.setMinHeight(400);
+		secondaryStage.setMinWidth(500);
+		
+		//Game Over window
+		HBox GameOverTopBox = new HBox();
+		Label GameOverLabel = new Label("GAME OVER\n\n\n");
+		GameOverLabel.setFont(GameOverLabel.getFont().font("Arial",48.0));
+		GameOverTopBox.getChildren().addAll(GameOverLabel);
+		GameOverTopBox.setAlignment(Pos.CENTER);
+		GameOverWindow.setTop(GameOverTopBox);
+		
+		HBox GameOverCenterBox = new HBox();
+		Label GameOverDescriptionLabel = new Label("You lived a long life\n\n\n");
+		GameOverDescriptionLabel.setFont(GameOverDescriptionLabel.getFont().font("Arial",20.0));
+		GameOverCenterBox.getChildren().addAll(GameOverDescriptionLabel);
+		GameOverCenterBox.setAlignment(Pos.CENTER);
+		GameOverWindow.setTop(GameOverCenterBox);
+
+		Button restartButton = new Button("RESTART GAME"); //creates new button
+	    restartButton.setMinHeight(100);
+	    restartButton.setMinWidth(100);
+	    restartButton.setFont(restartButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 25.0));
+	    restartButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
+	    restartButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
+	    GameOverWindow.setBottom(restartButton);
+	    GameOverWindow.setAlignment(restartButton, Pos.CENTER);
+	    Scene LostScene = new Scene(GameOverWindow);
+		lostStage.setScene(LostScene);
+		lostStage.setMinHeight(400);
+		lostStage.setMinWidth(500);
+		
+		//Events
+		//Start Button
+	    startButton.setOnAction(new EventHandler<ActionEvent>() {
+
+	        @Override
+	        public void handle(ActionEvent event) {
+	        	secondaryStage.show();
+	        }
+	      });
+	    
+	    //Exit button
+		startMenuExitButton.setOnAction(new EventHandler<ActionEvent>() {
+
+	        @Override
+	        public void handle(ActionEvent event) {
+	          primaryStage.close();
+	          secondaryStage.close();
+	          lostStage.close();
+	        }
+	      });
+	    
 		//Left Button Action
 		leftButton.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	        	if(gameover==false) {
-	    			prevposition = position;
+	        	if(position[0]==2&&position[1]==2) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("At the amusement park, none of your friends show up and you life a boring, uneventful life alone….");
+    				lostStage.show();
+    			}
 	    			if(position[0]==0) {
 	    				position[1]++;
 	    			}else {
 	    				position[0]++;
 	    				position[1]++;
 	    			}
+	    			
 	    			progress++;
-	    			if(progress==4) {
-	    				gameover = true;
+	    			if(progress==3) {
+	    				position[0] = 0;
+	    				position[1] = 4;
+	    			}
+	    			if(position[0]==2&&position[1]==2) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
 	    			}else {
 	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("");
 	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
-	    				centerGameText.setText(questions.printQuestion(life, position[0], position[1]));
+	    				rightButton.setStyle("");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.BLACK);
 	    			}
 	    			pb.setProgress((.33F)*progress);
-	    			}
+
 	        }
 	      });
 		
@@ -232,8 +287,7 @@ public class ChooseLifeStartMenu extends Application{
 		rightButton.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	        	if(gameover==false) {
-	    			prevposition = position;
+	        	
 	    			if(position[0]==0) {
 	    				position[0]++;
 	    				position[1]++;
@@ -242,30 +296,73 @@ public class ChooseLifeStartMenu extends Application{
 	    				position[1]++;
 	    			}
 	    			progress++;
-	    			if(progress==4) {
-	    				gameover = true;
-	    			}else {
+	    			if(progress==3) {
+	    				position[0] = 0;
+	    				position[1] = 4;
+	    			}
 	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("");
 	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
-	    				centerGameText.setText(questions.printQuestion(life, position[0], position[1]));
-	    			}
+	    				rightButton.setStyle("");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.BLACK);
 	    			pb.setProgress((.33F)*progress);
-	    			}
+	    			
 	        }
 	      });
 		
-		//finalize in-game window
-		Scene scene2 = new Scene(gameWindow);
-		secondaryStage.setScene(scene2);
-		secondaryStage.setTitle("CHOOSE LIFE");
-		secondaryStage.setMinHeight(400);
-		secondaryStage.setMinWidth(500);
+		exitButton.setOnAction(new EventHandler<ActionEvent>() {
+
+	        @Override
+	        public void handle(ActionEvent event) {
+	        	secondaryStage.hide();
+	        	reset();
+	        	leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	        	leftButton.setStyle("");
+				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+				rightButton.setStyle("");
+				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+				centerGameText.setTextFill(Color.BLACK);
+				pb.setProgress((.33F)*progress);
+	        }
+	      });
+		
+		rewindButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override
+		    public void handle(ActionEvent event) {
+		    	secondaryStage.hide();
+		    }
+	      });
+		
+		restartButton.setOnAction(new EventHandler<ActionEvent>() {
+
+	        @Override
+	        public void handle(ActionEvent event) {
+	        	lostStage.hide();
+	        	reset();
+	        	leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	        	leftButton.setStyle("");
+				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+				rightButton.setStyle("");
+				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+				centerGameText.setTextFill(Color.BLACK);
+				pb.setProgress((.33F)*progress);
+				secondaryStage.show();
+	        }
+	      });
+		
 	}
+		
 	
-	
+	public static void reset() {
+    	position[0] = 0;
+    	position[1] = 0;
+    	prevposition[0] = 0;
+    	prevposition[1] = 0;
+    	progress = 0;
+	}
 
 /*
-
 	*/
 	/**
 	 * Launches game
