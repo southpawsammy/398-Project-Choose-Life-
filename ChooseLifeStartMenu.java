@@ -71,8 +71,8 @@ public class ChooseLifeStartMenu extends Application{
 		HBox h2 = new HBox();
 		Label centerStartLabel = new Label("Every decision you make will trigger a new decision to be made.\n"
 				+ "Throughout your journey, you may come across Critical Questions.\n"
-				+ "Answer these correctly and you will recieve a Rewind Bonus, allowing you\n"
-				+ "to go back one question at any point in your journey.\n\n\n\n\n\n");
+				+ "Answer these incorrectly and you will fail the game,\n"
+				+ "\"ending your life\".\n\n\n\n\n\n");
 		centerStartLabel.setFont(centerStartLabel.getFont().font("Arial",15.0));
 		h2.getChildren().addAll(centerStartLabel);
 		h2.setAlignment(Pos.CENTER);
@@ -113,14 +113,6 @@ public class ChooseLifeStartMenu extends Application{
 		
 		//create and display button grid
 		
-		//Rewind button
-		Button rewindButton = new Button("REWIND BONUS"); //creates new button
-		rewindButton.setMinHeight(50);
-		rewindButton.setMinWidth(50);
-		rewindButton.setFont(rewindButton.getFont().font("Arial", FontWeight.EXTRA_BOLD, 15.0));
-		rewindButton.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID,new CornerRadii(10.0),BorderStroke.MEDIUM)));
-		rewindButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
-		
 		//Exit Button
 		Button exitButton = new Button("EXIT"); //creates new button
 		exitButton.setMinHeight(50);
@@ -130,8 +122,7 @@ public class ChooseLifeStartMenu extends Application{
 		exitButton.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10.0), new Insets(.1))));
 		
 	    
-		buttonGrid.add(rewindButton,0,0);
-		buttonGrid.add(exitButton, 1, 0);
+		buttonGrid.add(exitButton, 0, 0);
 		buttonGrid.setAlignment(Pos.CENTER);
 		gameWindow.setBottom(buttonGrid);
 		gameWindow.setAlignment(buttonGrid, Pos.CENTER);
@@ -248,7 +239,17 @@ public class ChooseLifeStartMenu extends Application{
 	        public void handle(ActionEvent event) {
 	        	if(position[0]==2&&position[1]==2) {
     				secondaryStage.hide();
-    				GameOverDescriptionLabel.setText("At the amusement park, none of your friends show up and you life a boring, uneventful life alone….");
+    				GameOverDescriptionLabel.setText("At the amusement park, none of your friends show up and you life a boring, uneventful life alone...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==1&&position[1]==10) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("Your mom knows the professor and knows that you skipped.\nYour parents are dissapointed.\nNot mad, dissapointed. Their dissapointment builds inside you until you have to drop out, move home, and live the rest of your life in a boring state of nothing...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==0&&position[1]==14) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("While cooking, a kitchen fire starts. You escape, but your house is burned to the ground.\nAll your memories and possessions are gone, and your life goes on, just without much meaning.");
     				lostStage.show();
     			}
 	    			if(position[0]==0) {
@@ -259,9 +260,26 @@ public class ChooseLifeStartMenu extends Application{
 	    			}
 	    			
 	    			progress++;
-	    			if(progress==3) {
+	    			if(progress==4) {
 	    				position[0] = 0;
 	    				position[1] = 4;
+	    			}
+	    			if(progress==8) {
+	    				position[0] = 0;
+	    				position[1] = 8;
+	    			}
+	    			if(progress == 12) {
+	    				position[0] = 0;
+	    				position[1] = 12;
+	    			}
+	    			if(progress == 16) {
+	    				position[0] = 0;
+	    				position[1] = 16;
+	    			}
+	    			if(progress == 20) {
+	    				secondaryStage.hide();
+	    				GameOverDescriptionLabel.setText("You lived a long life");
+	    				lostStage.show();
 	    			}
 	    			if(position[0]==2&&position[1]==2) {
 	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
@@ -270,7 +288,32 @@ public class ChooseLifeStartMenu extends Application{
 	    				rightButton.setStyle("-fx-background-color: #ff6347");
 	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
 	    				centerGameText.setTextFill(Color.RED);
-	    			}else {
+	    			}
+	    			else if(position[0]==0&&position[1]==10) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==0&&position[1]==14) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==0&&position[1]==17) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else {
 	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
 	    				leftButton.setStyle("");
 	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
@@ -278,7 +321,7 @@ public class ChooseLifeStartMenu extends Application{
 	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
 	    				centerGameText.setTextFill(Color.BLACK);
 	    			}
-	    			pb.setProgress((.33F)*progress);
+	    			pb.setProgress((.05F)*progress);
 
 	        }
 	      });
@@ -287,6 +330,46 @@ public class ChooseLifeStartMenu extends Application{
 		rightButton.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
+	        	if(position[0]==1&&position[1]==5) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("It starts to thunderstorm while you're playing,\nand during one of your backswings, you get struck by lightning, and slowly the world fades to black...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==0&&position[1]==10) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("You stay in the class, which is the hardest at the school.\nMentally, it burns you out until you can no longer think... or move... and the next thing you know, it fades to dark...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==2&&position[1]==10) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("Your mom claims that showing up halfway through is rude and disrespectful.\nYour parents are dissapointed. Not mad, dissapointed.\nTheir dissapointment builds inside you until you have to drop out, move home, and live the rest of your life in a boring state of nothing.");
+    				lostStage.show();
+    			}
+	        	if(position[0]==3&&position[1]==10) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("You cannot graduate on time after dropping the class.\nYour parents can't send you to an extra semester, and you have to drop out, one semester away from a college degree...\nyou become unmotivated, and your life is a boring nothingness...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==1&&position[1]==13) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("Your boss finds out about your attempted sabotage. You're fired. Your life slowly spirals in a downward direction,\nuntil it becomes so uneventful that even you dont want to know how it goes.");
+    				lostStage.show();
+    			}
+	        	if(position[0]==0&&position[1]==17) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("Your boss never notices you, and you stay at the same job doing the same work everyday...\nevery year... until you finally retire with no new friends and no new experiences.\nYour life is so boring even you don't care how it ends.");
+    				lostStage.show();
+    			}
+	        	if(position[0]==1&&position[1]==17) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("Your flight flies through the Bermuda Triangle, and no one on your plane is ever heard from again...");
+    				lostStage.show();
+    			}
+	        	if(position[0]==0&&position[1]==18) {
+    				secondaryStage.hide();
+    				GameOverDescriptionLabel.setText("While at work, the building burns to the ground. All your work is ruined. You escape unharmed,\nbut you can't turn in your project. You're fired, and in a new city with no friends, your life becomes meaningless...");
+    				lostStage.show();
+    			}
 	        	
 	    			if(position[0]==0) {
 	    				position[0]++;
@@ -296,17 +379,92 @@ public class ChooseLifeStartMenu extends Application{
 	    				position[1]++;
 	    			}
 	    			progress++;
-	    			if(progress==3) {
+	    			if(progress==4) {
 	    				position[0] = 0;
 	    				position[1] = 4;
 	    			}
+	    			if(progress==8) {
+	    				position[0] = 0;
+	    				position[1] = 8;
+	    			}
+	    			if(progress == 12) {
+	    				position[0] = 0;
+	    				position[1] = 12;
+	    			}
+	    			if(progress == 16) {
+	    				position[0] = 0;
+	    				position[1] = 16;
+	    			}
+	    			if(progress == 20) {
+	    				secondaryStage.hide();
+	    				GameOverDescriptionLabel.setText("You lived a long life");
+	    				lostStage.show();
+	    			}
+	    			if(position[0]==1&&position[1]==5) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==1&&position[1]==10) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    				}
+	    			else if(position[0]==2&&position[1]==10) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==3&&position[1]==10) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==1&&position[1]==13) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==1&&position[1]==17) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else if(position[0]==1&&position[1]==18) {
+	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
+	    				leftButton.setStyle("-fx-background-color: #ff6347");
+	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
+	    				rightButton.setStyle("-fx-background-color: #ff6347");
+	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
+	    				centerGameText.setTextFill(Color.RED);
+	    			}
+	    			else {
 	    				leftGameText.setText(questions.printOptions(position[0], position[1])[0]);
 	    				leftButton.setStyle("");
 	    				rightGameText.setText(questions.printOptions(position[0], position[1])[1]);
 	    				rightButton.setStyle("");
 	    				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
 	    				centerGameText.setTextFill(Color.BLACK);
-	    			pb.setProgress((.33F)*progress);
+	    			}
+	    			pb.setProgress((.05F)*progress);
 	    			
 	        }
 	      });
@@ -323,16 +481,10 @@ public class ChooseLifeStartMenu extends Application{
 				rightButton.setStyle("");
 				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
 				centerGameText.setTextFill(Color.BLACK);
-				pb.setProgress((.33F)*progress);
+				pb.setProgress((.05F)*progress);
 	        }
 	      });
 		
-		rewindButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override
-		    public void handle(ActionEvent event) {
-		    	secondaryStage.hide();
-		    }
-	      });
 		
 		restartButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -346,8 +498,9 @@ public class ChooseLifeStartMenu extends Application{
 				rightButton.setStyle("");
 				centerGameText.setText(questions.printQuestion(kidlife, position[0], position[1]));
 				centerGameText.setTextFill(Color.BLACK);
-				pb.setProgress((.33F)*progress);
+				pb.setProgress((.05F)*progress);
 				secondaryStage.show();
+				GameOverDescriptionLabel.setText("You lived a long life");
 	        }
 	      });
 		
